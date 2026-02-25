@@ -1,0 +1,73 @@
+{% load static %}
+<footer class="bg-gray-800 text-white mt-auto" {% if branding.color %}style="background-color: {{ branding.color }}"{% endif %}>
+    <div class="container mx-auto px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Company Info -->
+            <div class="space-y-4">
+                <a class="flex items-center gap-2" href="/">
+                    <img class="h-6"
+                        src="{% if branding.logo %}{{ branding.logo.url }}{% else %}{% static 'images/logo.svg' %}{% endif %}"
+                        alt="Logo" />
+                    <span class="text-lg font-bold">{% if request.tenant %}{{ request.tenant.name }}{% else %}{{PROJECT_TITLE }}{% endif %}</span>
+                </a>
+                <p class="text-gray-300 text-sm">
+                    {% if branding.description %}{{ branding.description }}{% else %}Providing excellent service and solutions for all your needs.{% endif %}
+                </p>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold mb-4 text-white">Contact Us</h3>
+                <div class="space-y-3 text-gray-300">
+                    <!-- Address -->
+                    <div class="flex items-start gap-3">
+                        <img class="w-5 h-5 mt-1 opacity-70" src="https://img.icons8.com/small/32/ffffff/marker.png"
+                            alt="Address" />
+                        <p class="text-sm text-gray-300">
+
+                            {% if branding %}{{ branding.address }}{% else %}123 Business Street<br>
+                            Suite 100<br>
+                            City, State 12345{% endif %}
+                        </p>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="flex items-center gap-3">
+                        <img class="w-5 h-5 opacity-70" src="https://img.icons8.com/small/32/ffffff/phone.png"
+                            alt="Phone" />
+                        <p class="text-sm text-gray-300">{% if branding %}{{ branding.phone }}{% else %}(555) 123-4567{% endif %}</p>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="flex items-center gap-3">
+                        <img class="w-5 h-5 opacity-70" src="https://img.icons8.com/small/32/ffffff/secured-letter.png"
+                            alt="Email" />
+                        <p class="text-sm text-gray-300">{% if branding %}{{ branding.email }}{% else %}contact@example.com{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Links / Hours -->
+            <div class="space-y-4">
+                <!-- Social Media Links (Optional) -->
+                <div class="flex gap-4 pt-4">
+                    <a href="#" class="hover:opacity-75 transition-opacity">
+                        <img class="w-6 h-6" src="https://img.icons8.com/small/32/ffffff/facebook-new.png"
+                            alt="Facebook" />
+                    </a>
+                    <a href="#" class="hover:opacity-75 transition-opacity">
+                        <img class="w-6 h-6" src="https://img.icons8.com/small/32/ffffff/twitter.png" alt="Twitter" />
+                    </a>
+                    <a href="#" class="hover:opacity-75 transition-opacity">
+                        <img class="w-6 h-6" src="https://img.icons8.com/small/32/ffffff/linkedin.png" alt="LinkedIn" />
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright Bar -->
+        <div class="border-t border-white-700 mt-8 pt-8 text-center text-sm">
+            <p class="text-white">&copy; {% now "Y" %} {% if request.tenant %}{{ request.tenant.name }}{% else %}Saas{% endif %}. All rights reserved.</p>
+        </div>
+    </div>
+</footer>

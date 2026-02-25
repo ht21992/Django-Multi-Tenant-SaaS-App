@@ -1,0 +1,132 @@
+{% extends 'layouts/blank.html' %}
+
+{% block content %}
+
+<div class="max-w-3xl mx-auto px-8 py-24">
+    <!-- Product List -->
+    <ul id="product-list" class="space-y-10 mb-16">
+        {% for product in products %}
+            <li class="border-b border-gray-200 pb-8">
+                <div class="flex justify-between items-start">
+                    <h2 class="text-5xl font-thin tracking-tight">
+                        {{ product.name }}
+                    </h2>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                        {% if product.is_active %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {% if product.is_active %}Active{% else %}Inactive{% endif %}
+                    </span>
+                </div>
+
+                <div class="mt-2 flex items-center gap-4">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                        {% if product.type == 'product' %}bg-blue-100 text-blue-800{% else %}bg-purple-100 text-purple-800{% endif %}">
+                        {{ product.get_type_display }}
+                    </span>
+                    <span class="text-2xl font-semibold text-gray-900">
+                        ${{ product.price }}
+                    </span>
+                </div>
+
+                {% if product.description %}
+                    <p class="mt-3 text-lg text-gray-500 leading-relaxed max-w-2xl">
+                        {{ product.description }}
+                    </p>
+                {% endif %}
+
+                <div class="mt-4 text-sm text-gray-400">
+                    Added: {{ product.created_at|date:"F j, Y" }}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Create Product Form -->
+    <form
+        hx-post="{% url 'create-product' %}"
+        hx-target="#product-list"
+        hx-swap="beforeend"
+        _="on htmx:afterRequest reset() me"
+        class="max-w-xl space-y-6"
+    >
+        {% csrf_token %}
+
+        <div class="space-y-4">
+            <input
+                type="text"
+                name="name"
+                placeholder="Product/Service name"
+                required
+                autofocus
+                class="w-full px-5 py-3 text-lg
+                    border border-gray-300 rounded-2xl
+                    focus:outline-none focus:ring-2
+                    focus:ring-black focus:border-black
+                    transition"
+            />
+
+            <textarea
+                name="description"
+                placeholder="Description (optional)"
+                rows="3"
+                class="w-full px-5 py-3 text-lg
+                    border border-gray-300 rounded-2xl
+                    focus:outline-none focus:ring-2
+                    focus:ring-black focus:border-black
+                    transition resize-none"
+            ></textarea>
+
+            <div class="grid grid-cols-2 gap-4">
+                <select
+                    name="type"
+                    required
+                    class="px-5 py-3 text-lg
+                        border border-gray-300 rounded-2xl
+                        focus:outline-none focus:ring-2
+                        focus:ring-black focus:border-black
+                        transition bg-white"
+                >
+                    <option value="" disabled selected>Select type</option>
+                    <option value="product">Product</option>
+                    <option value="service">Service</option>
+                </select>
+
+                <input
+                    type="number"
+                    name="price"
+                    placeholder="Price"
+                    required
+                    step="0.01"
+                    min="0"
+                    class="px-5 py-3 text-lg
+                        border border-gray-300 rounded-2xl focus:outline-none focus:ring-2
+                        focus:ring-black focus:border-black
+                        transition"
+                />
+            </div>
+
+            <div class="flex gap-4 items-center">
+
+                <label class="flex items-center gap-2 mx-2 text-gray-600">
+                    <input
+                        type="checkbox"
+                        name="is_active"
+                        checked
+                        class="w-5 h-5 rounded border-gray-300
+                            text-black focus:ring-black"
+                    />
+                    <span>Active</span>
+                </label>
+            </div>
+        </div>
+
+        <button
+            class="w-full bg-black text-white py-3 rounded-2xl
+                text-lg font-medium
+                hover:bg-gray-900 active:scale-[0.98]
+                transition-all duration-150 shadow-lg" {% if branding.color %}style="background-color: {{ branding.color }}"{% endif %}>
+            Add Product/Service
+        </button>
+    </form>
+</div>
+
+{% endblock %}

@@ -39,8 +39,8 @@ SHARED_APPS = [
     "allauth",
     "allauth.account",
     # Platform / SaaS apps (PUBLIC schema)
-    "core",
     "users",
+    "core",
     "saas_catalog",
     "billing",
     "public_pages",
@@ -64,6 +64,7 @@ TENANT_APPS = [
     "allauth",
     "allauth.account",
     # Shop (TENANT schema)
+    "users",
     "shop",
     "memberships",
     "products",
@@ -87,6 +88,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "memberships.middleware.TenantMembershipMiddleware",  # Custom middleware
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",

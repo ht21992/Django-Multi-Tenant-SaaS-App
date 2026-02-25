@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from products.models import Product
 
-# Create your views here.
+from memberships.decorators import role_required
 
 
 def index_view(request):
@@ -14,6 +14,7 @@ def index_view(request):
     return render(request, "tenant/index.html", context=context)
 
 
+@role_required("owner", "admin")
 def create_product_view(request):
     if request.method == "POST":
         name = request.POST.get("name")

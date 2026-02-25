@@ -6,7 +6,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.contrib.auth.views import redirect_to_login
 from django.contrib import messages
-from .forms import *
+from .forms import ProfileForm, UsernameForm, EmailForm
 
 
 def profile_view(request, username=None):

@@ -1,0 +1,98 @@
+<!-- templates/orders/success.html -->
+{% extends 'layouts/blank.html' %}
+
+{% block content %}
+<div class=" min-h-[80vh] flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl w-full text-center">
+
+        <!-- Success Animation/Icon -->
+        <div class="mb-8" style="margin-top: 10%;">
+            <div class="mx-auto w-24 h-24 bg-green-100 rounded-full flex items-center justify-center animate-bounce">
+                <svg class="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
+            Order Successful!
+        </h1>
+
+        <p class="text-xl text-gray-600 mb-6">
+            Thank you for your purchase. Your order has been received and is being processed.
+        </p>
+
+        <!-- Order Details Card -->
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-8 mb-8 text-left">
+            <h2 class="text-2xl font-semibold mb-6 text-gray-800">Order Details</h2>
+
+            <div class="space-y-4">
+                <!-- Order Number -->
+                <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                    <span class="text-gray-600">Order Number:</span>
+                    <span class="font-mono font-semibold text-gray-900">#{{ order.id|stringformat:"06d" }}</span>
+                </div>
+
+                <!-- Order Date -->
+                <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                    <span class="text-gray-600">Order Date:</span>
+                    <span class="font-semibold text-gray-900">{{ order.created_at|date:"F j, Y" }}</span>
+                </div>
+
+                <!-- Total Amount -->
+                <div class="flex justify-between items-center py-3 border-b border-gray-100">
+                    <span class="text-gray-600">Total Amount:</span>
+                    <span class="text-2xl font-bold text-gray-900">${{ order.total_amount }}</span>
+                </div>
+
+                <!-- Payment Status -->
+                <div class="flex justify-between items-center py-3">
+                    <span class="text-gray-600">Payment Status:</span>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Paid
+                    </span>
+                </div>
+            </div>
+
+            <!-- Email Confirmation Note -->
+            <div class="mt-6 p-4 bg-blue-50 rounded-xl flex items-start gap-3">
+                <svg class="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                </svg>
+                <p class="text-sm text-blue-800">
+                    A confirmation email has been sent to <span class="font-semibold">{{ request.user.email }}</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'orders:order_details' order.id %}" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                </svg>
+                View Order Details
+            </a>
+
+            <a href="{% url 'index' %}"
+               class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-black text-white font-semibold rounded-xl hover:bg-gray-900 active:scale-95 transition-all duration-200"
+               {% if branding.color %}style="background-color: {{ branding.color }}"{% endif %}>
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                </svg>
+                Continue Shopping
+            </a>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="mt-8 text-sm text-gray-500">
+            <p>Need help with your order? <a href="#" class="text-indigo-600 hover:text-indigo-800 font-medium hover:underline">Contact Support</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

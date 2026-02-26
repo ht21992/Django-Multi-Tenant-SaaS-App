@@ -1,0 +1,16 @@
+<div id="cart-container"
+     class="fixed top-24 right-4 w-96 z-50"
+     hx-get="{% url 'orders:htmx_cart' %}"
+     hx-trigger="load"
+     hx-target="#cart-container"
+     hx-swap="innerHTML">
+    <!-- Loading state while cart loads -->
+    <div class="bg-white rounded-2xl shadow-xl border border-gray-200 p-4">
+        <div class="animate-pulse flex items-center justify-center space-x-2">
+            <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+            <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+            <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+            <span class="text-gray-500 text-sm">Loading cart...</span>
+        </div>
+    </div>
+</div>

@@ -16,6 +16,7 @@ urlpatterns = [
     path("profile/", include("users.urls")),
     path("@<username>/", profile_view, name="profile"),
     path("", include("tenant_pages.urls")),
+    path("", include("orders.urls")),
 ]
 
 

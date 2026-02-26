@@ -68,7 +68,6 @@ TENANT_APPS = [
     "shop",
     "memberships",
     "products",
-    "inventory",
     "customers",
     "orders",
     "payments",

@@ -4,12 +4,13 @@ from django.db import connection
 from django.contrib.auth import get_user_model
 
 from memberships.models import Membership
+from customers.models import Customer
 
 User = get_user_model()
 
 
 @receiver(post_save, sender=User)
-def create_membership_for_tenant_user(sender, instance, created, **kwargs):
+def create_membership_or_customer_for_tenant_user(sender, instance, created, **kwargs):
     if not created:
         return
 
@@ -24,8 +25,5 @@ def create_membership_for_tenant_user(sender, instance, created, **kwargs):
         )
         return
 
-    # Default signup role = viewer
-    Membership.objects.create(
-        user=instance,
-        role="viewer",
-    )
+    # Default signup create customer
+    Customer.objects.create(user=instance, email=instance.email)

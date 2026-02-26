@@ -14,179 +14,290 @@
     {% django_htmx_script %}
     <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style type="text/tailwindcss">
-    [x-cloak] {
-        display: none !important;
-    }
+<style type="text/tailwindcss">
+[x-cloak] {
+display: none !important;
+}
 
-    /* Smooth scrolling and better typography */
-    html {
-        scroll-behavior: smooth;
-    }
+/* Smooth scrolling and better typography */
+html {
+scroll-behavior: smooth;
+}
 
-    h1 {
-        @apply text-4xl font-bold mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent
-    }
+/* Dynamic brand color variables - these will be overridden by your brand color */
+:root {
+  --brand-gradient-from:{% if branding and branding.meta.brand_gradient_from %} {{ branding.meta.brand_gradient_from }} {% else %} #4b5563 {% endif %}  ; /* gray-600 */
+  --brand-gradient-to: {% if branding and branding.meta.brand_gradient_to %} {{ branding.meta.brand_gradient_to }} {% else %} #4b5563 {% endif %}  ;   /* gray-600 (both 600s for a flat look) */
+  --brand-light: {% if branding and branding.meta.brand_light %} {{ branding.meta.brand_light }} {% else %} #f3f4f6 {% endif %};         /* gray-100 */
+  --brand-medium: {% if branding and branding.meta.brand_medium %} {{ branding.meta.brand_medium }} {% else %} #9ca3af {% endif %};        /* gray-400 */
+}
 
-    h2 {
-        @apply text-xl font-bold mb-2 text-gray-800
-    }
 
-    h3 {
-        @apply text-lg font-bold text-gray-700
-    }
+h1 {
+@apply text-4xl font-bold mb-4 bg-clip-text text-transparent;
+background-image: linear-gradient(to right, var(--brand-gradient-from), var(--brand-gradient-to));
+}
 
-    p {
-        @apply mb-4 text-gray-600 leading-relaxed
-    }
+h2 {
+@apply text-xl font-bold mb-2 text-gray-800
+}
 
-    /* Enhanced buttons with glass morphism effect */
-    .button, button, [type='submit'], [type='button'] {
-        @apply bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-xl shadow-lg transition-all cursor-pointer
-               hover:shadow-xl hover:scale-105 active:scale-95 backdrop-blur-sm border border-white/20
-    }
+h3 {
+@apply text-lg font-bold text-gray-700
+}
 
-    .button, button a, [type='submit'], [type='button'] {
-        @apply px-6 py-4 inline-block
-    }
+p {
+@apply mb-4 text-gray-600 leading-relaxed
+}
 
-    /* Button variants with modern gradients */
-    .button.alert, button.alert {
-        @apply bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700
-    }
+/* Base button styles */
+.button, button, [type='submit'], [type='button'] {
+@apply font-bold rounded-xl shadow-lg transition-all cursor-pointer px-6 py-4 inline-block
+hover:shadow-xl hover:scale-105 active:scale-95 backdrop-blur-sm border border-white/20;
+}
 
-    .button-red {
-        @apply bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600
-    }
+/* Primary buttons - use brand colors */
+.button.primary,
+button.primary,
+[type='submit'].primary,
+[type='button'].primary,
+/* Default buttons (without a variant class) use brand colors */
+.button:not(.alert):not(.button-red):not(.button-gray):not(.button-outline):not(.button-glass):not(.secondary):not(.warning):not(.danger),
+button:not(.alert):not(.button-red):not(.button-gray):not(.button-outline):not(.button-glass):not(.secondary):not(.warning):not(.danger),
+[type='submit']:not(.alert):not(.button-red):not(.button-gray):not(.button-outline):not(.button-glass):not(.secondary):not(.warning):not(.danger),
+[type='button']:not(.alert):not(.button-red):not(.button-gray):not(.button-outline):not(.button-glass):not(.secondary):not(.warning):not(.danger) {
+background-image: linear-gradient(to right, var(--brand-gradient-from), var(--brand-gradient-to));
+}
 
-    .button-gray {
-        @apply bg-gradient-to-r from-gray-400 to-gray-400 hover:from-gray-400 hover:to-gray-500 text-gray-600
-    }
+/* Secondary buttons - neutral/gray */
+.button.secondary,
+button.secondary,
+[type='submit'].secondary,
+[type='button'].secondary {
+@apply bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700;
+}
 
-    /* New button styles */
-    .button-outline {
-        @apply bg-transparent border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white
-    }
+/* Warning buttons - amber/orange */
+.button.warning,
+button.warning,
+[type='submit'].warning,
+[type='button'].warning {
+@apply bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600;
+}
 
-    .button-glass {
-        @apply bg-white/10 backdrop-blur-md border border-white/20 text-white shadow-lg hover:bg-white/20
-    }
+/* Danger buttons - red */
+.button.danger,
+button.danger,
+[type='submit'].danger,
+[type='button'].danger {
+@apply bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600;
+}
 
-    /* Enhanced navigation with subtle animations */
-    .navitems>li>a {
-        @apply flex items-center gap-2 h-12 px-4 hover:bg-indigo-500/10 rounded-lg transition-all duration-300
-               hover:translate-x-1 hover:text-indigo-600;
-    }
+/* Success buttons - green */
+.button.success,
+button.success,
+[type='submit'].success,
+[type='button'].success {
+@apply bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600;
+}
 
-    /* Modern hover lists */
-    .hoverlist>* {
-        @apply hover:bg-gradient-to-r hover:from-indigo-50 hover:to-purple-50 rounded-lg transition-all duration-200
-               hover:shadow-sm hover:border-l-4 hover:border-l-indigo-400;
-    }
+/* Keep existing button variants for backward compatibility */
+.button.alert, button.alert {
+@apply bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700
+}
 
-    .hoverlist>*>a {
-        @apply flex items-center p-3;
-    }
+.button-red {
+@apply bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600
+}
 
-    /* Enhanced highlight effect */
-    .highlight {
-        @apply bg-gradient-to-r from-indigo-100 to-purple-100 rounded-lg p-4 border-l-4 border-indigo-400;
-    }
+.button-gray {
+@apply bg-gradient-to-r from-gray-400 to-gray-400 hover:from-gray-400 hover:to-gray-500 text-gray-600
+}
 
-    /* Modern form inputs */
-    .textarea, textarea, input:not([type='file']):not([type='checkbox']):not([type='radio']) {
-        @apply w-full rounded-xl py-4 px-5 bg-white border border-gray-200 shadow-sm transition-all duration-200
-               focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400 focus:shadow-lg focus:scale-[1.02]
-    }
+/* Outline button - uses brand color for border and text */
+.button-outline {
+@apply bg-transparent border-2 hover:text-white;
+border-color: var(--brand-gradient-from);
+color: var(--brand-gradient-from);
+}
+.button-outline:hover {
+background-image: linear-gradient(to right, var(--brand-gradient-from), var(--brand-gradient-to));
+border-color: transparent;
+}
 
-    input[type=file] {
-        @apply bg-white pl-0 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
-               file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100
-    }
+/* Glass button - uses brand color for hover state */
+.button-glass {
+@apply bg-white/10 backdrop-blur-md border border-white/20 text-white shadow-lg;
+}
+.button-glass:hover {
+background-image: linear-gradient(to right, var(--brand-gradient-from), var(--brand-gradient-to));
+}
 
-    input[type='checkbox'], input[type='radio'] {
-        @apply rounded focus:ring-2 focus:ring-indigo-200
-    }
+/* Enhanced navigation with subtle animations - uses brand colors */
+.navitems>li>a {
+@apply flex items-center gap-2 h-12 px-4 rounded-lg transition-all duration-300
+hover:translate-x-1;
+}
+.navitems>li>a:hover {
+background-color: color-mix(in srgb, var(--brand-gradient-from) 10%, transparent);
+color: var(--brand-gradient-from);
+}
 
-    /* Enhanced alerts with icons */
-    .alert-info {
-        @apply bg-gradient-to-r from-sky-400 to-blue-500 text-white p-4 rounded-xl shadow-lg border-l-4 border-blue-300
-    }
+/* Modern hover lists - uses brand colors */
+.hoverlist>* {
+@apply rounded-lg transition-all duration-200 hover:shadow-sm;
+}
+.hoverlist>*:hover {
+background-image: linear-gradient(to right,
+color-mix(in srgb, var(--brand-gradient-from) 10%, transparent),
+color-mix(in srgb, var(--brand-gradient-to) 10%, transparent));
+border-left-width: 4px;
+border-left-color: var(--brand-gradient-from);
+}
 
-    .alert-success {
-        @apply bg-gradient-to-r from-green-400 to-emerald-500 text-white p-4 rounded-xl shadow-lg border-l-4 border-emerald-300
-    }
+.hoverlist>*>a {
+@apply flex items-center p-3;
+}
 
-    .alert-warning {
-        @apply bg-gradient-to-r from-amber-400 to-orange-500 text-white p-4 rounded-xl shadow-lg border-l-4 border-amber-300
-    }
+/* Enhanced highlight effect - uses brand colors */
+.highlight {
+@apply rounded-lg p-4 border-l-4;
+background-image: linear-gradient(to right,
+color-mix(in srgb, var(--brand-gradient-from) 20%, transparent),
+color-mix(in srgb, var(--brand-gradient-to) 20%, transparent));
+border-left-color: var(--brand-gradient-from);
+}
 
-    .alert-danger {
-        @apply bg-gradient-to-r from-red-400 to-rose-500 text-white p-4 rounded-xl shadow-lg border-l-4 border-rose-300
-    }
+/* Modern form inputs - uses brand colors for focus states */
+.textarea, textarea, input:not([type='file']):not([type='checkbox']):not([type='radio']) {
+@apply w-full rounded-xl py-4 px-5 bg-white border border-gray-200 shadow-sm transition-all duration-200
+focus:shadow-lg focus:scale-[1.02];
+}
+.textarea:focus, textarea:focus, input:not([type='file']):not([type='checkbox']):not([type='radio']):focus {
+@apply ring-2;
+--tw-ring-color: color-mix(in srgb, var(--brand-gradient-from) 50%, transparent);
+border-color: var(--brand-gradient-from);
+}
 
-    /* Link enhancements */
-    .allauth content a {
-        @apply underline underline-offset-4 decoration-2 decoration-indigo-300 transition-colors duration-200
-    }
+input[type=file] {
+@apply bg-white pl-0 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0
+file:text-sm file:font-semibold;
+}
+input[type=file]::file-selector-button {
+background-color: color-mix(in srgb, var(--brand-gradient-from) 15%, white);
+color: var(--brand-gradient-from);
+}
+input[type=file]::file-selector-button:hover {
+background-color: color-mix(in srgb, var(--brand-gradient-from) 25%, white);
+}
 
-    .allauth content a:hover {
-        @apply text-indigo-600 decoration-indigo-500
-    }
+input[type='checkbox'], input[type='radio'] {
+@apply rounded;
+}
+input[type='checkbox']:focus, input[type='radio']:focus {
+--tw-ring-color: color-mix(in srgb, var(--brand-gradient-from) 50%, transparent);
+}
 
-    /* Error states with modern design */
-    .errorlist li {
-        @apply p-3 pl-4 border-l-red-400 border-l-4 border-solid mb-2 text-red-600 bg-red-50 rounded-r-lg
-               flex items-center gap-2 before:content-["⚠"] before:text-red-400
-    }
+/* Enhanced alerts with icons - keep these as is for semantic colors */
+.alert-info {
+@apply bg-gradient-to-r from-sky-400 to-blue-500 text-white p-4 rounded-xl shadow-lg border-l-4 border-blue-300
+}
 
-    /* Floating label effect */
-    .form-group {
-        @apply relative mb-6
-    }
+.alert-success {
+@apply bg-gradient-to-r from-green-400 to-emerald-500 text-white p-4 rounded-xl shadow-lg border-l-4 border-emerald-300
+}
 
-    .form-group input:focus + label,
-    .form-group input:not(:placeholder-shown) + label {
-        @apply transform -translate-y-8 -translate-x-2 scale-75 text-indigo-600
-    }
+.alert-warning {
+@apply bg-gradient-to-r from-amber-400 to-orange-500 text-white p-4 rounded-xl shadow-lg border-l-4 border-amber-300
+}
 
-    .form-group label {
-        @apply absolute left-4 top-4 text-gray-500 transition-all duration-200 pointer-events-none
-    }
+.alert-danger {
+@apply bg-gradient-to-r from-red-400 to-rose-500 text-white p-4 rounded-xl shadow-lg border-l-4 border-rose-300
+}
 
-    /* Card hover effects */
-    .card {
-        @apply bg-white rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]
-    }
+/* Link enhancements - uses brand colors */
+.allauth content a {
+@apply underline underline-offset-4 decoration-2 transition-colors duration-200;
+text-decoration-color: color-mix(in srgb, var(--brand-gradient-from) 50%, transparent);
+}
+.allauth content a:hover {
+color: var(--brand-gradient-from);
+text-decoration-color: var(--brand-gradient-from);
+}
 
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-        @apply w-2
-    }
+/* Error states with modern design */
+.errorlist li {
+@apply p-3 pl-4 border-l-4 border-solid mb-2 text-red-600 bg-red-50 rounded-r-lg
+flex items-center gap-2 before:content-[""] before:text-red-400;
+border-left-color: #f87171; /* Keep red for errors */
+}
 
-    ::-webkit-scrollbar-track {
-        @apply bg-gray-100
-    }
+/* Floating label effect - uses brand colors */
+.form-group {
+@apply relative mb-6
+}
 
-    ::-webkit-scrollbar-thumb {
-        @apply bg-indigo-300 rounded-full hover:bg-indigo-400
-    }
+.form-group input:focus + label,
+.form-group input:not(:placeholder-shown) + label {
+@apply transform -translate-y-8 -translate-x-2 scale-75;
+color: var(--brand-gradient-from);
+}
 
-    /* Loading animation */
-    @keyframes shimmer {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
-    }
+.form-group label {
+@apply absolute left-4 top-4 text-gray-500 transition-all duration-200 pointer-events-none
+}
 
-    .shimmer {
-        @apply overflow-hidden relative
-    }
+/* Card hover effects - subtle brand influence */
+.card {
+@apply bg-white rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]
+}
+.card:hover {
+box-shadow: 0 25px 50px -12px color-mix(in srgb, var(--brand-gradient-from) 30%, black);
+}
 
-    .shimmer::before {
-        content: '';
-        @apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 to-transparent;
-        animation: shimmer 2s infinite;
-    }
+/* Custom scrollbar - uses brand colors */
+::-webkit-scrollbar {
+@apply w-2
+}
+
+::-webkit-scrollbar-track {
+@apply bg-gray-100
+}
+
+::-webkit-scrollbar-thumb {
+@apply rounded-full;
+background-color: color-mix(in srgb, var(--brand-gradient-from) 60%, gray);
+}
+::-webkit-scrollbar-thumb:hover {
+background-color: var(--brand-gradient-from);
+}
+
+/* Loading animation */
+@keyframes shimmer {
+0% { transform: translateX(-100%); }
+100% { transform: translateX(100%); }
+}
+
+.shimmer {
+@apply overflow-hidden relative
+}
+
+.shimmer::before {
+content: '';
+@apply absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/50 to-transparent;
+animation: shimmer 2s infinite;
+}
+
+/* Dynamic brand color utility classes */
+.bg-brand-light {
+background-color: color-mix(in srgb, var(--brand-gradient-from) 10%, transparent);
+}
+.text-brand {
+color: var(--brand-gradient-from);
+}
+.border-brand {
+border-color: var(--brand-gradient-from);
+}
 </style>
 </head>
 <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="{% block class %}{% endblock %}">

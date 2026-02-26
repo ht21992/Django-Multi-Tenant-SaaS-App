@@ -20,5 +20,6 @@ def tenant_branding(request):
             "description": branding.description,
             "color": branding.color,
             "logo": branding.logo,
+            "meta": branding.meta,
         }
     }

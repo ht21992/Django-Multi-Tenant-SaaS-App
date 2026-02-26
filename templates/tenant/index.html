@@ -1,54 +1,93 @@
 {% extends 'layouts/blank.html' %}
 
 {% block content %}
-
+<div id="cart-container"
+         class="fixed top-24 right-4 w-96 z-50"
+         hx-get="{% url 'orders:htmx_cart' %}"
+         hx-trigger="load"
+         hx-target="#cart-container"
+         hx-swap="innerHTML"
+         style="z-index: 0 !important;"
+         >
+</div>
 <div class="max-w-3xl mx-auto px-8 py-24">
     <!-- Product List -->
-    <ul id="product-list" class="space-y-10 mb-16">
+    <div id="product-list" class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-8 mb-16">
         {% for product in products %}
-            <li class="border-b border-gray-200 pb-8">
-                <div class="flex justify-between items-start">
-                    <h2 class="text-5xl font-thin tracking-tight">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300 overflow-hidden">
+            <!-- Product Card -->
+            <div class="p-6">
+                <!-- Header with title and status -->
+                <div class="flex justify-between items-start mb-4">
+                    <h2 class="text-2xl font-semibold text-gray-900 line-clamp-2">
                         {{ product.name }}
                     </h2>
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap ml-2
                         {% if product.is_active %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-800{% endif %}">
                         {% if product.is_active %}Active{% else %}Inactive{% endif %}
                     </span>
                 </div>
 
-                <div class="mt-2 flex items-center gap-4">
+                <!-- Type and Price -->
+                <div class="flex items-center gap-3 mb-3">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                         {% if product.type == 'product' %}bg-blue-100 text-blue-800{% else %}bg-purple-100 text-purple-800{% endif %}">
                         {{ product.get_type_display }}
                     </span>
-                    <span class="text-2xl font-semibold text-gray-900">
+                    <span class="text-xl font-bold text-gray-900">
                         ${{ product.price }}
                     </span>
                 </div>
 
+                <!-- Description -->
                 {% if product.description %}
-                    <p class="mt-3 text-lg text-gray-500 leading-relaxed max-w-2xl">
-                        {{ product.description }}
-                    </p>
+                <p class="text-gray-600 text-sm leading-relaxed mb-4 line-clamp-2">
+                    {{ product.description }}
+                </p>
                 {% endif %}
 
-                <div class="mt-4 text-sm text-gray-400">
-                    Added: {{ product.created_at|date:"F j, Y" }}
+                <!-- Meta info and Add to Cart -->
+                <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                    <div class="text-xs text-gray-400">
+                        Added: {{ product.created_at|date:"M j, Y" }}
+                    </div>
+
+                    <!-- Add to Cart Button - Much better positioned -->
+                    <form hx-post="{% url 'orders:htmx_cart_add' product.id %}"
+                          hx-target="#cart-container"
+                          hx-swap="innerHTML"
+                          class="inline-block">
+                        {% csrf_token %}
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit"
+                                class="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-xl
+                                       hover:bg-gray-900 active:scale-95 transition-all duration-150
+                                       text-sm font-medium shadow-sm hover:shadow">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                            </svg>
+                            Add to Cart
+                        </button>
+                    </form>
                 </div>
-            </li>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-span-full text-center py-12">
+            <p class="text-gray-500 text-lg">No products available.</p>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
 
     {% if request.user.membership.first.role in "owner,admin" %}
-
+    <div class="max-w-4xl mx-auto border-t border-gray-200">
     <!-- Create Product Form -->
     <form
         hx-post="{% url 'create-product' %}"
         hx-target="#product-list"
         hx-swap="beforeend"
         _="on htmx:afterRequest reset() me"
-        class="max-w-xl space-y-6"
+        class="w-full space-y-6"
     >
         {% csrf_token %}
 
@@ -129,7 +168,7 @@
             Add Product/Service
         </button>
     </form>
-
+    </div>
     {% endif %}
 </div>
 

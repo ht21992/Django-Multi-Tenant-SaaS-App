@@ -29,7 +29,20 @@ def index_view(request):
 def plan_selection_view(request):
     """Display all active plans with HTMX support"""
     plans = SaaSPlan.objects.filter(is_active=True)
-    return render(request, "public/partials/plans_grid.html", {"plans": plans})
+    user_subscriptions = []
+
+    if request.user.is_authenticated:
+        user_subscriptions = list(
+            Subscription.objects.filter(
+                business_lead_user_id=request.user.id, active=True
+            ).values_list("plan_id", flat=True)
+        )
+
+    return render(
+        request,
+        "public/partials/plans_grid.html",
+        {"plans": plans, "user_subscription_plan_ids": user_subscriptions},
+    )
 
 
 @login_required(login_url="/accounts/login/")

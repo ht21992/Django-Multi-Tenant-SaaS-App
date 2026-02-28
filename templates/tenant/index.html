@@ -1,6 +1,7 @@
 {% extends 'layouts/blank.html' %}
 
 {% block content %}
+{% if request.user.is_authenticated %}
 <div id="cart-container"
          class="fixed top-24 right-4 w-96 z-50"
          hx-get="{% url 'orders:htmx_cart' %}"
@@ -10,6 +11,7 @@
          style="z-index: 0 !important;"
          >
 </div>
+{% endif %}
 <div class="max-w-3xl mx-auto px-8 py-24">
     <!-- Product List -->
     <div id="product-list" class="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-1 gap-8 mb-16">
@@ -79,7 +81,7 @@
         {% endfor %}
     </div>
 
-    {% if request.user.membership.first.role in "owner,admin" %}
+    {% if membership and membership.role in "owner,admin" %}
     <div class="max-w-4xl mx-auto border-t border-gray-200">
     <!-- Create Product Form -->
     <form

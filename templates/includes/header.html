@@ -2,7 +2,7 @@
 <header class="flex items-center justify-between bg-gray-800 h-20 px-8 text-white sticky top-0 z-40"
     {% if branding.color %}style="background-color: {{ branding.color }}"{% endif %}>
     <div>
-        <a class="flex items-center gap-2" href="/">
+            <a class="flex items-center gap-2" href="/">
             <img class="h-6" src="{% if branding.logo %}{{ branding.logo.url }}{% else %}{% static 'images/logo.svg' %}{% endif %}" alt="Logo"/>
             <span class="text-lg font-bold">{% if request.tenant %}{{ request.tenant.name }}{% else %}Saas{% endif %}</span>
         </a>
@@ -14,9 +14,18 @@
 
                 <a href="/" class="px-4 py-2 rounded-md group-hover:text-gray-100">
                 Home
-            </a>
+                </a>
 
             </li>
+            {% if current_subscription %}
+            <li class="group {% if branding.color %}hover:bg-{{branding.color}}-800 transition-all{%endif%}">
+
+                <a href="{% url 'subscription' %}" class="px-4 py-2 rounded-md group-hover:text-gray-100">
+                Subscription
+                </a>
+
+            </li>
+            {% endif %}
 
 
             <li  x-data="{ dropdownOpen: false }" class="relative group {% if branding.color %}hover:bg-{{branding.color}}-800 transition-all{%endif%}">

@@ -1,0 +1,33 @@
+{% extends 'layouts/blank.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-16 px-4">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <h1 class="text-5xl font-bold text-gray-900 mb-4">Simple, Transparent Pricing</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Choose the perfect plan for your business. Always flexible to scale.
+            </p>
+        </div>
+
+        <!-- Plans Grid -->
+        <div id="plans-container"
+             hx-get="{% url 'saas_catalog:plans_htmx_cards' %}"
+             hx-trigger="load"
+             hx-swap="innerHTML">
+            <div class="flex justify-center items-center min-h-64">
+                <div class="text-gray-500">Loading plans...</div>
+            </div>
+        </div>
+
+        <!-- Comparison Link -->
+        <div class="text-center mt-16">
+            <a href="{% url 'saas_catalog:plans_comparison' %}"
+               class="inline-block bg-gray-900 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-800 transition">
+                View Detailed Comparison
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

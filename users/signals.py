@@ -15,6 +15,18 @@ def user_postsave(sender, instance, created, **kwargs):
         Profile.objects.create(
             user=user,
         )
+
+        # Create BusinessLead in public schema
+        if connection.schema_name == "public" and not instance.is_superuser:
+            from billing.models import BusinessLead
+
+            BusinessLead.objects.get_or_create(
+                user_id=user.id,
+                defaults={
+                    "email": user.email,
+                    "status": "pending",
+                },
+            )
     else:
         # update allauth emailaddress if exists
         try:

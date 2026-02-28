@@ -1,0 +1,74 @@
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    {% for plan in plans %}
+    <div class="relative bg-gray-800 rounded-2xl shadow-2xl overflow-hidden hover:shadow-2xl hover:scale-105 transition-all duration-300
+        {% if plan.is_popular %}ring-2 ring-blue-500{% endif %}">
+
+        <!-- Popular Badge -->
+        {% if plan.is_popular %}
+        <div class="absolute top-0 right-0 z-10">
+            <div class="bg-blue-500 text-white px-4 py-1 rounded-bl-lg text-sm font-semibold">
+                Most Popular
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="p-8">
+            <!-- Plan Header -->
+            <h3 class="text-2xl font-bold text-white mb-2">{{ plan.name }}</h3>
+            <p class="text-gray-400 text-sm mb-6">{{ plan.description }}</p>
+
+            <!-- Price -->
+            <div class="mb-8 pb-8 border-b border-gray-700">
+                <span class="text-5xl font-bold text-white">${{ plan.price }}</span>
+                <span class="text-gray-400 ml-2">/{{ plan.get_billing_interval_display|lower }}</span>
+                <p class="text-sm text-gray-500 mt-2">
+                    {% if plan.billing_interval == "monthly" %}
+                        Cancel anytime
+                    {% else %}
+                        Save 20% vs monthly
+                    {% endif %}
+                </p>
+            </div>
+
+            <!-- Plan Limits -->
+            <div class="mb-8 space-y-3">
+                <div class="flex items-center text-gray-300">
+                    <svg class="w-5 h-5 text-green-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span><strong>{{ plan.max_users }}</strong> {% if plan.max_users == 1 %}user{% else %}users{% endif %}</span>
+                </div>
+                <div class="flex items-center text-gray-300">
+                    <svg class="w-5 h-5 text-green-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>Up to <strong>{{ plan.max_products }}</strong> products</span>
+                </div>
+                <div class="flex items-center text-gray-300">
+                    <svg class="w-5 h-5 text-green-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span><strong>{{ plan.max_orders }}</strong> orders/month</span>
+                </div>
+            </div>
+
+            <!-- CTA Button -->
+            {% if request.user.is_authenticated %}
+            <button hx-get="/plans/{{ plan.id }}/checkout/"
+                    hx-target="body"
+                    hx-swap="innerHTML"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition
+                    {% if plan.is_popular %}ring-2 ring-blue-500{% endif %}">
+                Get Started
+            </button>
+            {% else %}
+            <a href="/accounts/login/"
+               class="block w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition text-center
+               {% if plan.is_popular %}ring-2 ring-blue-500{% endif %}">
+                Sign In to Get Started
+            </a>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>

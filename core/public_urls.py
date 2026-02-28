@@ -18,6 +18,7 @@ urlpatterns = [
     path("@<username>/", profile_view, name="profile"),
     path("admin_tenants/", tenant_admin_site.urls),
     path("", include("public_pages.urls")),
+
 ]
 
 

@@ -1,0 +1,79 @@
+{% extends 'layouts/blank.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-2xl shadow-lg p-8">
+            <!-- Header -->
+            <div class="mb-8 pb-8 border-b border-gray-200">
+                <h1 class="text-4xl font-bold text-gray-900">{{ plan.name }}</h1>
+                <p class="text-gray-600 text-lg mt-2">{{ plan.description }}</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- Left Column - Price & Limits -->
+                <div>
+                    <!-- Price -->
+                    <div class="mb-8 bg-blue-50 rounded-lg p-6">
+                        <div class="flex items-baseline mb-2">
+                            <span class="text-5xl font-bold text-gray-900">${{ plan.price }}</span>
+                            <span class="text-gray-600 ml-2">/{{ plan.get_billing_interval_display|lower }}</span>
+                        </div>
+                        {% if plan.billing_interval == "monthly" %}
+                        <p class="text-sm text-gray-600">Billed monthly, cancel anytime</p>
+                        {% else %}
+                        <p class="text-sm text-green-600">Save 20% vs monthly billing</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Plan Limits -->
+                    <div class="space-y-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Limits</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                                <span class="text-gray-700">Team Members</span>
+                                <span class="font-semibold text-blue-600">{{ plan.max_users }}</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                                <span class="text-gray-700">Products</span>
+                                <span class="font-semibold text-blue-600">{{ plan.max_products }}</span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                                <span class="text-gray-700">Orders/Month</span>
+                                <span class="font-semibold text-blue-600">{{ plan.max_orders }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column - Features -->
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-6">Included Features</h3>
+                    <ul class="space-y-4">
+                        {% for feature_key, feature_value in plan.features.items %}
+                            {% if feature_value %}
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-green-500 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-700">{{ feature_key|replace:"_":" "|title }}</span>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="mt-12 pt-8 border-t border-gray-200">
+                <button class="w-full bg-blue-600 text-white py-4 rounded-lg font-semibold text-lg hover:bg-blue-700 transition">
+                    Get Started with {{ plan.name }}
+                </button>
+                <a href="{% url 'saas_catalog:plans_list' %}" class="block text-center mt-4 text-blue-600 hover:text-blue-700 font-medium">
+                    Back to all plans
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

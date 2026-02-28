@@ -15,7 +15,7 @@ def role_required(*allowed_roles):
                     return redirect("public_pages:index")
 
             try:
-                membership = Membership.objects.get(user=request.user)
+                membership = Membership.objects.get(user_id=request.user.id)
 
                 request.membership = membership
             except Membership.DoesNotExist:

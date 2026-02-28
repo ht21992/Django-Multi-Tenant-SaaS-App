@@ -1,0 +1,105 @@
+{% extends 'layouts/blank.html' %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-16 px-4">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">Plan Comparison</h1>
+            <p class="text-lg text-gray-600">See what's included in each plan</p>
+        </div>
+
+        <!-- Comparison Table -->
+        <div class="bg-white rounded-2xl shadow-lg overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-200">
+                        <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 sticky left-0 bg-gray-50 z-10">
+                            Features
+                        </th>
+                        {% for plan in plans %}
+                        <th class="px-6 py-4 text-center">
+                            <div class="text-lg font-bold text-gray-900">{{ plan.name }}</div>
+                            <div class="text-2xl font-bold text-blue-600 mt-2">${{ plan.price }}</div>
+                            <div class="text-sm text-gray-600 mt-1">/{{ plan.get_billing_interval_display|lower }}</div>
+                            {% if plan.is_popular %}
+                            <div class="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full mt-2">
+                                Most Popular
+                            </div>
+                            {% endif %}
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- User Limit -->
+                    <tr class="border-b border-gray-200">
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900 sticky left-0 bg-white">
+                            Team Members
+                        </td>
+                        {% for plan in plans %}
+                        <td class="px-6 py-4 text-center text-sm text-gray-700">
+                            {{ plan.max_users }}
+                        </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Products -->
+                    <tr class="border-b border-gray-200 bg-gray-50">
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900 sticky left-0 bg-gray-50">
+                            Products
+                        </td>
+                        {% for plan in plans %}
+                        <td class="px-6 py-4 text-center text-sm text-gray-700">
+                            {{ plan.max_products }}
+                        </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Orders -->
+                    <tr class="border-b border-gray-200">
+                        <td class="px-6 py-4 text-sm font-medium text-gray-900 sticky left-0 bg-white">
+                            Orders/Month
+                        </td>
+                        {% for plan in plans %}
+                        <td class="px-6 py-4 text-center text-sm text-gray-700">
+                            {{ plan.max_orders }}
+                        </td>
+                        {% endfor %}
+                    </tr>
+
+                    <!-- Feature Rows -->
+                    {% for feature_key, feature_label in features.items %}
+                    <tr class="border-b border-gray-200{% cycle '' ' bg-gray-50' %}">
+                        <td class="px-6 py-4 text-sm text-gray-900 sticky left-0{% cycle ' bg-white' ' bg-gray-50' %}">
+                            {{ feature_label|title }}
+                        </td>
+                        {% for plan in plans %}
+                        <td class="px-6 py-4 text-center">
+                            {% if plan.features|get_item:feature_key %}
+                                <svg class="w-5 h-5 text-green-500 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                            {% else %}
+                                <svg class="w-5 h-5 text-gray-300 mx-auto" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                            {% endif %}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- CTA -->
+        <div class="text-center mt-12">
+            <p class="text-gray-600 mb-4">Still have questions?</p>
+            <a href="#" class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
+                Contact Sales
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

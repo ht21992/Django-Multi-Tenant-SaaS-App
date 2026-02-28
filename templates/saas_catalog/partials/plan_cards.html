@@ -1,0 +1,83 @@
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    {% for plan in plans %}
+    <div class="relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300
+        {% if plan.is_popular %}ring-2 ring-blue-500{% endif %}">
+
+        <!-- Popular Badge -->
+        {% if plan.is_popular %}
+        <div class="absolute top-0 right-0">
+            <div class="bg-blue-500 text-white px-4 py-1 rounded-bl-lg text-sm font-semibold">
+                Most Popular
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="p-8">
+            <!-- Plan Header -->
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">{{ plan.name }}</h3>
+            <p class="text-gray-600 text-sm mb-6">{{ plan.description }}</p>
+
+            <!-- Price -->
+            <div class="mb-8">
+                <span class="text-5xl font-bold text-gray-900">${{ plan.price }}</span>
+                <span class="text-gray-600 ml-2">/{{ plan.get_billing_interval_display|lower }}</span>
+                {% if plan.billing_interval == "monthly" %}
+                <p class="text-sm text-gray-500 mt-2">Billed monthly, cancel anytime</p>
+                {% else %}
+                <p class="text-sm text-green-600 mt-2">Save 20% vs monthly billing</p>
+                {% endif %}
+            </div>
+
+            <!-- Plan Limits -->
+            <div class="mb-8 pb-8 border-b border-gray-200">
+                <ul class="space-y-3 text-sm text-gray-700">
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span><strong>{{ plan.max_users }}</strong> {% if plan.max_users == 1 %}user{% else %}users{% endif %}</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>Up to <strong>{{ plan.max_products }}</strong> products</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span><strong>{{ plan.max_orders }}</strong> orders/month</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Features -->
+            <div class="mb-8">
+                <h4 class="font-semibold text-gray-900 mb-4">Included Features:</h4>
+                <ul class="space-y-2 text-sm">
+                    {% for feature_key, feature_value in plan.features.items %}
+                        {% if feature_value %}
+                        <li class="flex items-start">
+                            <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-gray-700">{{ feature_key|replace:"_":" "|title }}</span>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- CTA Button -->
+            <button class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition
+                    {% if plan.is_popular %}ring-2 ring-blue-500{% endif %}"
+                    hx-get="{% url 'saas_catalog:plan_detail' plan.id %}"
+                    hx-target="body"
+                    hx-swap="innerHTML">
+                Get Started
+            </button>
+        </div>
+    </div>
+    {% endfor %}
+</div>

@@ -119,6 +119,7 @@ TEMPLATES = [
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "shop.context_processors.tenant_branding",
+                "public_pages.context_proccessors.tenant_subscription",
             ],
         },
     },

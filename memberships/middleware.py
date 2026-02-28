@@ -23,7 +23,7 @@ class TenantMembershipMiddleware:
 
         if request.user.is_authenticated:
             if not Membership.objects.filter(
-                user=request.user, is_active=True
+                user_id=request.user.id, is_active=True
             ).exists():
                 logout(request)
                 return redirect(reverse("account_login"))

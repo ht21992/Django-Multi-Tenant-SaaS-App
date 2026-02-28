@@ -20,10 +20,10 @@ def create_membership_or_customer_for_tenant_user(sender, instance, created, **k
 
     if instance.is_superuser:
         Membership.objects.update_or_create(
-            user=instance,
+            user_id=instance.id,
             defaults={"role": "owner"},
         )
         return
 
     # Default signup create customer
-    Customer.objects.create(user=instance, email=instance.email)
+    Customer.objects.create(user_id=instance.id, email=instance.email)

@@ -2,14 +2,25 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.utils import timezone
 from products.models import Product
+from memberships.models import Membership
 
 from memberships.decorators import role_required
 
 
 def index_view(request):
     products = Product.objects.filter(is_active=True)  # Only show active products
+
+    # Fetch membership for current user
+    membership = None
+    if request.user.is_authenticated:
+        try:
+            membership = Membership.objects.get(user_id=request.user.id)
+        except Membership.DoesNotExist:
+            membership = None
+
     context = {
         "products": products,
+        "membership": membership,
     }
     return render(request, "tenant/index.html", context=context)
 

@@ -14,6 +14,8 @@ def tenant_branding(request):
     return {
         "branding": {
             "request": request,
+            "name": branding.name,
+            "business_type": branding.business_type,
             "phone": branding.phone,
             "email": branding.email,
             "address": branding.address,

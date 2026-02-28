@@ -8,7 +8,7 @@
                     <img class="h-6"
                         src="{% if branding.logo %}{{ branding.logo.url }}{% else %}{% static 'images/logo.svg' %}{% endif %}"
                         alt="Logo" />
-                    <span class="text-lg font-bold">{% if request.tenant %}{{ request.tenant.name }}{% else %}{{PROJECT_TITLE }}{% endif %}</span>
+                    <span class="text-lg font-bold">{% if request.tenant %}{{ branding.name }}{% else %}Sass{% endif %}</span>
                 </a>
                 <p class="text-gray-300 text-sm">
                     {% if branding.description %}{{ branding.description }}{% else %}Providing excellent service and solutions for all your needs.{% endif %}

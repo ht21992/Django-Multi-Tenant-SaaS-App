@@ -188,3 +188,5 @@ def subscription_view(request):
         }
 
     return render(request, "public/subscription.html", context)
+
+

@@ -1,0 +1,149 @@
+{% extends 'layouts/blank.html' %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">My Orders</h1>
+        <p class="text-gray-600">View and track all your orders</p>
+    </div>
+
+    <!-- Orders List -->
+    {% if orders %}
+    <div class="space-y-6">
+        {% for order in orders %}
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+            <!-- Order Header -->
+            <div class="bg-gray-50 px-6 py-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
+                        </svg>
+                        <span class="text-sm font-mono font-medium text-gray-900">#{{ order.id|stringformat:"06d" }}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        <span class="text-sm text-gray-600">{{ order.created_at|date:"M d, Y" }}</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <!-- Status Badge -->
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
+                        {% if order.status == 'paid' %}bg-green-100 text-green-800
+                        {% elif order.status == 'pending' %}bg-yellow-100 text-yellow-800
+                        {% elif order.status == 'cancelled' %}bg-red-100 text-red-800
+                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {{ order.get_status_display }}
+                    </span>
+                    <span class="text-lg font-bold text-gray-900">${{ order.total_amount }}</span>
+                </div>
+            </div>
+
+            <!-- Order Items -->
+            <div class="px-6 py-4">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="text-sm font-semibold text-gray-700 uppercase tracking-wider">Items</h3>
+                    <span class="text-xs text-gray-500">{{ order.items.count }} item{{ order.items.count|pluralize }}</span>
+                </div>
+
+                <div class="space-y-3">
+                    {% for item in order.items.all|slice:":3" %}
+                    <div class="flex items-center justify-between text-sm">
+                        <div class="flex items-center gap-3">
+                            <span class="font-medium text-gray-900">{{ item.product_name }}</span>
+                            <span class="text-gray-500">x{{ item.quantity }}</span>
+                        </div>
+                        <span class="text-gray-700">${{ item.subtotal }}</span>
+                    </div>
+                    {% endfor %}
+
+                    {% if order.items.count > 3 %}
+                    <div class="text-xs text-gray-500 italic pt-1 border-t border-gray-100">
+                        +{{ order.items.count|add:"-3" }} more item{{ order.items.count|add:"-3"|pluralize }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Order Footer -->
+            <div class="bg-gray-50 px-6 py-3 border-t border-gray-200 flex justify-between items-center">
+                <div class="flex items-center gap-4 text-sm">
+                    {% if order.notes %}
+                    <div class="flex items-center gap-1 text-gray-600">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        <span class="truncate max-w-xs">{{ order.notes }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                <a href="{% url 'orders:order_details' order.id %}"
+                   class="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors">
+                    View Details
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if orders.has_other_pages %}
+    <div class="mt-8 flex justify-center">
+        <nav class="flex items-center gap-2">
+            {% if orders.has_previous %}
+            <a href="?page={{ orders.previous_page_number }}"
+               class="px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+                Previous
+            </a>
+            {% endif %}
+
+            {% for i in orders.paginator.page_range %}
+                {% if orders.number == i %}
+                <span class="px-3 py-2 rounded-lg bg-indigo-600 text-white">{{ i }}</span>
+                {% else %}
+                <a href="?page={{ i }}"
+                   class="px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+                    {{ i }}
+                </a>
+                {% endif %}
+            {% endfor %}
+
+            {% if orders.has_next %}
+            <a href="?page={{ orders.next_page_number }}"
+               class="px-3 py-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors">
+                Next
+            </a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-16 bg-white rounded-xl border border-gray-200">
+        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+            </svg>
+        </div>
+        <h2 class="text-2xl font-semibold text-gray-900 mb-2">No orders yet</h2>
+        <p class="text-gray-600 mb-6">Looks like you haven't placed any orders</p>
+        <a href="{% url 'index' %}"
+           class="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors"
+           {% if branding.color %}style="background-color: {{ branding.color }};"{% endif %}>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+            Start Shopping
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

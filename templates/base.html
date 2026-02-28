@@ -292,6 +292,20 @@ animation: shimmer 2s infinite;
 .bg-brand-light {
 background-color: color-mix(in srgb, var(--brand-gradient-from) 10%, transparent);
 }
+
+.bg-solid-brand {
+    background: var(--brand-bg) !important;
+    background-image: none !important;
+    background-color: var(--brand-bg) !important;
+}
+
+
+.bg-solid-brand:hover {
+    background: var(--brand-bg-hover, var(--brand-bg)) !important;
+    background-image: none !important;
+    filter: brightness(0.9); /* Simple darken effect on hover */
+}
+
 .text-brand {
 color: var(--brand-gradient-from);
 }

@@ -11,6 +11,16 @@
          style="z-index: 0 !important;"
          >
 </div>
+
+<!-- Orders Button - Fixed position on the left side -->
+<a href="{% url 'orders:orders_list' %}"
+   class="fixed top-24 left-4 z-50 inline-flex items-center gap-2 bg-white text-gray-700 px-4 py-2 rounded-xl shadow-md hover:shadow-lg border border-gray-200 transition-all duration-150 group"
+   title="View your orders">
+    <svg class="w-5 h-5 text-gray-600 group-hover:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+    </svg>
+    <span class="font-medium">My Orders</span>
+</a>
 {% endif %}
 <div class="max-w-3xl mx-auto px-8 py-24">
     <!-- Product List -->
@@ -82,7 +92,21 @@
     </div>
 
     {% if membership and membership.role in "owner,admin" %}
-    <div class="max-w-4xl mx-auto border-t border-gray-200">
+    <div class="max-w-4xl mx-auto border-t border-gray-200 py-8">
+        <!-- Store Settings Button -->
+        <div class="mb-8 flex justify-between items-center">
+            <h3 class="text-2xl font-bold text-gray-900">Manage Your Store & Products</h3>
+            <a href="{% url 'shop:settings' %}"
+              {% if branding.color %}style="background-color: {{ branding.color }}"{% endif %}
+               class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-150">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                </svg>
+                Store Settings
+            </a>
+        </div>
+
     <!-- Create Product Form -->
     <form
         hx-post="{% url 'create-product' %}"
@@ -162,13 +186,14 @@
             </div>
         </div>
 
-        <button
-            class="w-full bg-black text-white py-3 rounded-2xl
-                text-lg font-medium
-                hover:bg-gray-900 active:scale-[0.98]
-                transition-all duration-150 shadow-lg" {% if branding.color %}style="background-color: {{ branding.color }}"{% endif %}>
+        <button class="w-full text-white py-3 rounded-2xl text-lg font-medium
+               bg-solid-brand hover:brightness-90 active:scale-[0.98]
+                    transition-all duration-150 shadow-lg"
+                style="--brand-bg: {% if branding.color %}{{ branding.color }}{% else %}#000000{% endif %};">
             Add Product/Service
         </button>
+
+
     </form>
     </div>
     {% endif %}

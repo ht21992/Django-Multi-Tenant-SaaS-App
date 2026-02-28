@@ -13,7 +13,7 @@ class Shop(models.Model):
     ]
     name = models.CharField(max_length=255)
     business_type = models.CharField(max_length=50, choices=BUSINESS_TYPES)
-    color = ColorField(default="#FF0000")
+    color = ColorField(default="#1f2937")
     description = models.TextField(blank=True)
     logo = models.ImageField(upload_to="site_logos/", blank=True, null=True)
     phone = models.CharField(max_length=50, blank=True)

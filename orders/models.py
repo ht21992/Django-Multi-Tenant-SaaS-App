@@ -20,6 +20,8 @@ class Order(models.Model):
         self.total_amount = total
         self.save()
         return total
+    
+
 
 
 class OrderItem(models.Model):

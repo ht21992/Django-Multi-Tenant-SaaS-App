@@ -5,6 +5,8 @@ from django.views.decorators.http import require_POST
 from products.models import Product
 from .cart import Cart
 from .models import Order, OrderItem
+from customers.models import Customer
+from django.core.paginator import Paginator
 
 
 @login_required
@@ -52,7 +54,10 @@ def checkout(request):
     if not cart.cart:
         return redirect("cart_detail")
 
-    order = Order.objects.create(status="pending", total_amount=cart.get_total_price())
+    customer, _ = Customer.objects.get_or_create(user_id=request.user.id)
+    order = Order.objects.create(
+        customer=customer, status="pending", total_amount=cart.get_total_price()
+    )
 
     for item in cart.get_items():
         OrderItem.objects.create(
@@ -78,3 +83,28 @@ def order_success(request, order_id):
 def order_details(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     return render(request, "tenant/orders/order_details.html", {"order": order})
+
+
+@login_required
+def order_list(request):
+
+    # Get customer for current user
+    try:
+        customer = Customer.objects.get(user_id=request.user.id)
+        orders = (
+            Order.objects.filter(customer=customer)
+            .prefetch_related("items")
+            .order_by("-created_at")
+        )
+    except Customer.DoesNotExist:
+        orders = Order.objects.none()
+
+    # Pagination
+    paginator = Paginator(orders, 10)
+    page = request.GET.get("page")
+    orders_page = paginator.get_page(page)
+
+    context = {
+        "orders": orders_page,
+    }
+    return render(request, "tenant/orders/orders.html", context)

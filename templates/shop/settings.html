@@ -1,0 +1,497 @@
+{% extends 'layouts/blank.html' %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-8 py-16">
+    <div class="bg-white rounded-2xl shadow-md p-8">
+        <h1 class="text-3xl font-bold mb-2 text-gray-900">Store Settings</h1>
+        <p class="text-gray-600 mb-8">Manage your store information and configuration</p>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+
+            <!-- Store Name -->
+            <div>
+                <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Store Name</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value="{{ shop.name }}"
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition"
+                    placeholder="Your Store Name"
+                />
+            </div>
+
+            <!-- Business Type -->
+            <div>
+                <label for="business_type" class="block text-sm font-semibold text-gray-700 mb-2">Business Type</label>
+                <select
+                    id="business_type"
+                    name="business_type"
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition bg-white"
+                >
+                    <option value="">Select a business type</option>
+                    {% for value, label in business_types %}
+                        <option value="{{ value }}" {% if shop.business_type == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="4"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition resize-none"
+                    placeholder="Describe your store..."
+                >{{ shop.description }}</textarea>
+            </div>
+
+            <!-- Logo -->
+            <div>
+                <label for="logo" class="block text-sm font-semibold text-gray-700 mb-2">Store Logo</label>
+                <div class="flex items-center gap-4">
+                    {% if shop.logo %}
+                    <img src="{{ shop.logo.url }}" alt="Logo" class="h-20 w-20 object-cover rounded-lg border border-gray-200">
+                    {% else %}
+                    <div class="h-20 w-20 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 border border-gray-200">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    {% endif %}
+                    <div class="flex-1">
+                        <input
+                            type="file"
+                            id="logo"
+                            name="logo"
+                            accept="image/*"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200"
+                        />
+                        <p class="text-xs text-gray-500 mt-1">Recommended size: 200x200px. Max file size: 5MB</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Brand Color Section -->
+            <div class="border-t border-gray-200 pt-6">
+                <div class="flex items-center gap-2 mb-4">
+                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
+                    </svg>
+                    <h2 class="text-xl font-semibold text-gray-900">Brand Colors</h2>
+                </div>
+                <p class="text-sm text-gray-600 mb-6">Customize your brand colors. These will be used throughout your store.</p>
+
+                <!-- Color Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- Primary Brand Color -->
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200" data-color-group>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            Primary Color
+                            <span class="text-xs font-normal text-gray-500 ml-2">Main brand color</span>
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <input
+                                    type="color"
+                                    id="color"
+                                    name="color"
+                                    value="{{ shop.color|default:'#000000' }}"
+                                    class="w-12 h-12 rounded-lg cursor-pointer border border-gray-300 p-1 bg-white"
+                                />
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center">
+                                    <span class="text-gray-500 mr-2">#</span>
+                                    <input
+                                        type="text"
+                                        name="color_hex"
+                                        value="{{ shop.color|default:'000000'|cut:'#' }}"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition font-mono text-sm"
+                                        placeholder="000000"
+                                        maxlength="6"
+                                        pattern="[A-Fa-f0-9]{6}"
+                                        data-hex-input
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full border border-gray-300" data-color-preview style="background-color: {{ shop.color|default:'#000000' }};"></div>
+                            <span class="text-xs text-gray-500">Preview</span>
+                        </div>
+                    </div>
+
+                    <!-- Gradient From Color -->
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200" data-color-group>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            Gradient Start
+                            <span class="text-xs font-normal text-gray-500 ml-2">For buttons and highlights</span>
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <input
+                                    type="color"
+                                    id="brand_gradient_from"
+                                    name="brand_gradient_from"
+                                    value="{{ shop.meta.brand_gradient_from|default:shop.color|default:'#4b5563' }}"
+                                    class="w-12 h-12 rounded-lg cursor-pointer border border-gray-300 p-1 bg-white"
+                                />
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center">
+                                    <span class="text-gray-500 mr-2">#</span>
+                                    <input
+                                        type="text"
+                                        name="brand_gradient_from_hex"
+                                        value="{{ shop.meta.brand_gradient_from|default:shop.color|default:'4b5563'|cut:'#' }}"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition font-mono text-sm"
+                                        placeholder="4b5563"
+                                        maxlength="6"
+                                        pattern="[A-Fa-f0-9]{6}"
+                                        data-hex-input
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full border border-gray-300" data-color-preview style="background-color: {{ shop.meta.brand_gradient_from|default:shop.color|default:'#4b5563' }};"></div>
+                            <span class="text-xs text-gray-500">Preview</span>
+                        </div>
+                    </div>
+
+                    <!-- Gradient To Color -->
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200" data-color-group>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            Gradient End
+                            <span class="text-xs font-normal text-gray-500 ml-2">For gradients and depth</span>
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <input
+                                    type="color"
+                                    id="brand_gradient_to"
+                                    name="brand_gradient_to"
+                                    value="{{ shop.meta.brand_gradient_to|default:shop.color|default:'#4b5563' }}"
+                                    class="w-12 h-12 rounded-lg cursor-pointer border border-gray-300 p-1 bg-white"
+                                />
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center">
+                                    <span class="text-gray-500 mr-2">#</span>
+                                    <input
+                                        type="text"
+                                        name="brand_gradient_to_hex"
+                                        value="{{ shop.meta.brand_gradient_to|default:shop.color|default:'4b5563'|cut:'#' }}"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition font-mono text-sm"
+                                        placeholder="4b5563"
+                                        maxlength="6"
+                                        pattern="[A-Fa-f0-9]{6}"
+                                        data-hex-input
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full border border-gray-300" data-color-preview style="background-color: {{ shop.meta.brand_gradient_to|default:shop.color|default:'#4b5563' }};"></div>
+                            <span class="text-xs text-gray-500">Preview</span>
+                        </div>
+                    </div>
+
+                    <!-- Brand Light Color -->
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200" data-color-group>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            Light Color
+                            <span class="text-xs font-normal text-gray-500 ml-2">For backgrounds and hover states</span>
+                        </label>
+                        <div class="flex items-center gap-3">
+                            <div class="relative">
+                                <input
+                                    type="color"
+                                    id="brand_light"
+                                    name="brand_light"
+                                    value="{{ shop.meta.brand_light|default:'#f3f4f6' }}"
+                                    class="w-12 h-12 rounded-lg cursor-pointer border border-gray-300 p-1 bg-white"
+                                />
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center">
+                                    <span class="text-gray-500 mr-2">#</span>
+                                    <input
+                                        type="text"
+                                        name="brand_light_hex"
+                                        value="{{ shop.meta.brand_light|default:'f3f4f6'|cut:'#' }}"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition font-mono text-sm"
+                                        placeholder="f3f4f6"
+                                        maxlength="6"
+                                        pattern="[A-Fa-f0-9]{6}"
+                                        data-hex-input
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full border border-gray-300" data-color-preview style="background-color: {{ shop.meta.brand_light|default:'#f3f4f6' }};"></div>
+                            <span class="text-xs text-gray-500">Preview</span>
+                        </div>
+                    </div>
+
+                    <!-- Brand Medium Color -->
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-200 md:col-span-2" data-color-group>
+                        <label class="block text-sm font-semibold text-gray-700 mb-3">
+                            Medium Color
+                            <span class="text-xs font-normal text-gray-500 ml-2">For borders and secondary elements</span>
+                        </label>
+                        <div class="flex items-center gap-3 max-w-md">
+                            <div class="relative">
+                                <input
+                                    type="color"
+                                    id="brand_medium"
+                                    name="brand_medium"
+                                    value="{{ shop.meta.brand_medium|default:'#9ca3af' }}"
+                                    class="w-12 h-12 rounded-lg cursor-pointer border border-gray-300 p-1 bg-white"
+                                />
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center">
+                                    <span class="text-gray-500 mr-2">#</span>
+                                    <input
+                                        type="text"
+                                        name="brand_medium_hex"
+                                        value="{{ shop.meta.brand_medium|default:'9ca3af'|cut:'#' }}"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition font-mono text-sm"
+                                        placeholder="9ca3af"
+                                        maxlength="6"
+                                        pattern="[A-Fa-f0-9]{6}"
+                                        data-hex-input
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-2 flex items-center gap-2">
+                            <div class="w-6 h-6 rounded-full border border-gray-300" data-color-preview style="background-color: {{ shop.meta.brand_medium|default:'#9ca3af' }};"></div>
+                            <span class="text-xs text-gray-500">Preview</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="border-t border-gray-200 pt-6">
+                <div class="flex items-center gap-2 mb-4">
+                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                    </svg>
+                    <h2 class="text-xl font-semibold text-gray-900">Contact Information</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value="{{ shop.email }}"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition"
+                            placeholder="contact@store.com"
+                        />
+                    </div>
+                    <div>
+                        <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">Phone</label>
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            value="{{ shop.phone }}"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition"
+                            placeholder="+1 (555) 000-0000"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address -->
+            <div>
+                <label for="address" class="block text-sm font-semibold text-gray-700 mb-2">Address</label>
+                <textarea
+                    id="address"
+                    name="address"
+                    rows="3"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition resize-none"
+                    placeholder="123 Main St, City, State ZIP"
+                >{{ shop.address }}</textarea>
+            </div>
+
+            <!-- Business Configuration -->
+            <div class="border-t border-gray-200 pt-6">
+                <div class="flex items-center gap-2 mb-4">
+                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <h2 class="text-xl font-semibold text-gray-900">Business Configuration</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div>
+                        <label for="timezone" class="block text-sm font-semibold text-gray-700 mb-2">Timezone</label>
+                        <select
+                            id="timezone"
+                            name="timezone"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition bg-white"
+                        >
+                            <option value="UTC" {% if shop.timezone == 'UTC' %}selected{% endif %}>UTC</option>
+                            <option value="America/New_York" {% if shop.timezone == 'America/New_York' %}selected{% endif %}>Eastern Time</option>
+                            <option value="America/Chicago" {% if shop.timezone == 'America/Chicago' %}selected{% endif %}>Central Time</option>
+                            <option value="America/Denver" {% if shop.timezone == 'America/Denver' %}selected{% endif %}>Mountain Time</option>
+                            <option value="America/Los_Angeles" {% if shop.timezone == 'America/Los_Angeles' %}selected{% endif %}>Pacific Time</option>
+                            <option value="Europe/London" {% if shop.timezone == 'Europe/London' %}selected{% endif %}>London</option>
+                            <option value="Europe/Paris" {% if shop.timezone == 'Europe/Paris' %}selected{% endif %}>Paris</option>
+                            <option value="Asia/Tokyo" {% if shop.timezone == 'Asia/Tokyo' %}selected{% endif %}>Tokyo</option>
+                            <option value="Australia/Sydney" {% if shop.timezone == 'Australia/Sydney' %}selected{% endif %}>Sydney</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="currency" class="block text-sm font-semibold text-gray-700 mb-2">Currency</label>
+                        <select
+                            id="currency"
+                            name="currency"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition bg-white"
+                        >
+                            <option value="USD" {% if shop.currency == 'USD' %}selected{% endif %}>USD ($)</option>
+                            <option value="EUR" {% if shop.currency == 'EUR' %}selected{% endif %}>EUR (€)</option>
+                            <option value="GBP" {% if shop.currency == 'GBP' %}selected{% endif %}>GBP (£)</option>
+                            <option value="JPY" {% if shop.currency == 'JPY' %}selected{% endif %}>JPY (¥)</option>
+                            <option value="CAD" {% if shop.currency == 'CAD' %}selected{% endif %}>CAD ($)</option>
+                            <option value="AUD" {% if shop.currency == 'AUD' %}selected{% endif %}>AUD ($)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="tax_rate" class="block text-sm font-semibold text-gray-700 mb-2">Tax Rate (%)</label>
+                        <input
+                            type="number"
+                            id="tax_rate"
+                            name="tax_rate"
+                            value="{{ shop.tax_rate }}"
+                            step="0.01"
+                            min="0"
+                            max="100"
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-black transition"
+                            placeholder="0.00"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex gap-4 pt-8 border-t border-gray-200">
+                <button
+                    type="submit"
+                    class="flex-1 bg-black text-white py-3 rounded-lg font-semibold hover:opacity-90 active:scale-[0.98] transition-all duration-150"
+                    {% if branding.color %}style="background-color: {{ branding.color }};"{% endif %}
+                >
+                    Save Settings
+                </button>
+                <a
+                    href="{% url 'index' %}"
+                    class="flex-1 bg-gray-100 text-gray-900 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-all duration-150 text-center"
+                >
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+(function() {
+    // Update preview when color picker or hex input changes
+    function updatePreview(group) {
+        const hexInput = group.querySelector('[data-hex-input]');
+        const preview = group.querySelector('[data-color-preview]');
+
+        if (hexInput && preview) {
+            let hexValue = hexInput.value.replace(/[^A-Fa-f0-9]/g, '');
+            if (hexValue.length === 6) {
+                preview.style.backgroundColor = '#' + hexValue;
+            }
+        }
+    }
+
+    // Handle color picker changes
+    document.querySelectorAll('input[type="color"]').forEach(picker => {
+        const group = picker.closest('[data-color-group]');
+        const hexInput = group?.querySelector('[data-hex-input]');
+
+        if (group && hexInput) {
+            picker.addEventListener('input', function(e) {
+                const hex = e.target.value.substring(1); // Remove #
+                hexInput.value = hex.toUpperCase();
+                updatePreview(group);
+            });
+        }
+    });
+
+    // Handle hex input changes
+    document.querySelectorAll('[data-hex-input]').forEach(input => {
+        const group = input.closest('[data-color-group]');
+        const picker = group?.querySelector('input[type="color"]');
+
+        if (group && picker) {
+            // Format hex input
+            input.addEventListener('input', function(e) {
+                let value = this.value.replace(/[^A-Fa-f0-9]/g, '').toUpperCase();
+                this.value = value;
+
+                if (value.length === 6) {
+                    picker.value = '#' + value;
+                    updatePreview(group);
+                }
+            });
+
+            // Validate on blur
+            input.addEventListener('blur', function() {
+                if (this.value.length !== 6) {
+                    // Reset to picker value
+                    const currentColor = picker.value.substring(1);
+                    this.value = currentColor.toUpperCase();
+                    updatePreview(group);
+                }
+            });
+        }
+    });
+
+    // Initial preview sync
+    document.querySelectorAll('[data-color-group]').forEach(group => {
+        updatePreview(group);
+    });
+})();
+</script>
+
+<style>
+input[type="color"] {
+    padding: 2px;
+    background: white;
+    cursor: pointer;
+}
+
+input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+input[type="color"]::-webkit-color-swatch {
+    border: none;
+    border-radius: 6px;
+}
+
+[data-hex-input] {
+    font-family: Monaco, Menlo, Ubuntu Mono, monospace;
+    letter-spacing: 0.5px;
+}
+</style>
+{% endblock %}

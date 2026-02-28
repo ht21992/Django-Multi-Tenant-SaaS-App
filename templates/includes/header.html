@@ -4,7 +4,7 @@
     <div>
             <a class="flex items-center gap-2" href="/">
             <img class="h-6" src="{% if branding.logo %}{{ branding.logo.url }}{% else %}{% static 'images/logo.svg' %}{% endif %}" alt="Logo"/>
-            <span class="text-lg font-bold">{% if request.tenant %}{{ request.tenant.name }}{% else %}Saas{% endif %}</span>
+            <span class="text-lg font-bold">{% if request.tenant %}{{ branding.name }}{% else %}Saas{% endif %}</span>
         </a>
     </div>
     <nav class="block relative" style="z-index: 999 !important;">

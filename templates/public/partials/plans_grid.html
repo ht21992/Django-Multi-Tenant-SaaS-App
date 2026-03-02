@@ -64,6 +64,15 @@
                {% if plan.is_popular %}ring-2 ring-blue-500{% endif %}">
                 Sign In to Get Started
             </a>
+            {% else %}
+                <button hx-get="/plans/{{ plan.id }}/checkout/"
+                        hx-target="body"
+                        hx-swap="innerHTML"
+                        class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition
+                        {% if plan.is_popular %}ring-2 ring-blue-500{% endif %}">
+                    Get Started
+                </button>
+
             {% endif %}
         </div>
     </div>
